@@ -9,7 +9,7 @@
 
 # Birdrecord CLI
 
-CLI for the [Birdrecord](https://www.birdreport.cn/) / China Bird Record mini-program API. HTTP defaults to API host `https://weixin.birdrecord.cn` (override with `--base-url`); the [portal site](https://www.birdreport.cn/) is separate.
+**Command-line tool** for [观鸟记录 / China Bird Record](https://www.birdreport.cn/) data, plus **Agent Skills** for the same workflows in agents. **Look up species** on the center checklist, **search and summarize observation records** (regions, dates, species, chart-style filters), and **fetch one record’s full detail** by id.
 
 **Species taxonomy**: Checklist entries, names, and `taxonid` values match the app and follow **Zheng 4**—the 4th edition of *A Checklist of the Birds of China* (中国鸟类分类与分布名录·第四版, “郑四”).
 
@@ -19,7 +19,7 @@ CLI for the [Birdrecord](https://www.birdreport.cn/) / China Bird Record mini-pr
 > **Paste the block below into OpenClaw.**
 >
 > ```
-> Install the Agent Skills from https://github.com/yoshino-s/birdrecord-cli skills.
+> Install the Agent Skills from https://github.com/yoshino-s/birdrecord-cli (under skills/) for OpenClaw. Run: npx skills add https://github.com/yoshino-s/birdrecord-cli -a openclaw -y from a suitable directory, then npx skills list to verify. If global install fits my machine better, use -g and say why.
 > ```
 
 ## Install from PyPI

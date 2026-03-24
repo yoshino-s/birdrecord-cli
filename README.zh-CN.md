@@ -9,7 +9,7 @@
 
 # Birdrecord CLI
 
-[观鸟记录](https://www.birdreport.cn/) / 中国观鸟记录中心 小程序 API 的 CLI。HTTP 默认访问 API 主机 `https://weixin.birdrecord.cn`（可用 `--base-url` 覆盖）；[官网](https://www.birdreport.cn/) 与 API 主机不同。
+面向 [观鸟记录 / 中国观鸟记录中心](https://www.birdreport.cn/) 的 **命令行工具**（`birdrecord-cli`），并附带 **Agent Skills**，供智能体使用同一套能力：**在中心名录里查鸟种**、**按条件搜索与统计观鸟记录**、**按记录 id 查看单条详情**。
 
 **鸟种**：清单、中文名/拉丁名及 `taxonid` 等均与小程序一致，以 **郑四**（《中国鸟类分类与分布名录》第四版）为准。
 
