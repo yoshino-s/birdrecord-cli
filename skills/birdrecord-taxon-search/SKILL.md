@@ -1,49 +1,53 @@
 ---
 name: birdrecord-taxon-search
 description: >-
-  Run birdrecord-cli via uvx with a pinned version: `uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli taxon …`.
-  Species checklist (Chinese/Latin/English, pinyin, initials). Zheng 4 / 郑四. Use for 鸟种、物种清单、
-  拉丁名、拼音、taxon checklist.
+  Birdrecord species checklist lookup and taxonid resolution (郑四). 鸟种、物种清单、taxon.
 ---
 
 # Birdrecord: species checklist search (`taxon`)
 
 ## When to use
 
-Use to **find or list species** from [观鸟记录](https://www.birdreport.cn/) using the published CLI.
+**Find or list species** for Birdrecord via the published CLI.
 
 ## Taxonomy
 
-Species align with the mini-program: **郑四**—*A Checklist of the Birds of China*, 4th ed. Do not assume IOC, eBird/Clements, or other checklists match `taxonid` or Chinese names.
+**郑四**—*A Checklist of the Birds of China*, 4th ed. Do not assume IOC, eBird/Clements, etc. match `taxonid` or Chinese names.
 
 ## How to run (agents)
 
-**Always use `uvx`** with a **pinned** `birdrecord-cli==0.1.0` (updated each release). Do **not** rely on `uv run main.py` unless the user is explicitly developing inside the repo.
+**Pin:** `birdrecord-cli==0.1.0` (bump each release).
+
+- **Invoke:** `uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli …`
+- **Chinese or 中文 `--schema`:** `BIRDRECORD_CLI_CN=1` on the same line (truthy; not `0` / `false` / `no` / `off`).
+- **No `uvx`:** `pip install 'birdrecord-cli==0.1.0'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
+- **Avoid** `uv run main.py` from random checkouts unless the user develops **birdrecord-cli** itself.
+
+### `taxon`
 
 ```bash
 uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli taxon [OPTIONS]
 ```
 
-Common options:
-
-| Option | Role |
-|--------|------|
+| Flag | Role |
+|------|------|
 | `-q` / `--query` | Case-insensitive substring on `name`, `latinname`, `englishname`, `pinyin`, `szm`. |
-| `--version` | Checklist build token; omit for CLI default (must match server). |
-| `--refresh` | Ignore cache and refetch. |
-| `--pretty` | Pretty-print JSON. |
-| `--schema` | Print request JSON Schema only (no HTTP). |
+| `--version` | Checklist token; omit = CLI default (must match server). |
+| `--refresh` | Bypass cache, refetch. |
+| `--pretty` | Pretty JSON. |
+| `--schema` | Request schema only, no HTTP. |
 
 ## Caching
 
-`uvx` uses a fresh env each time; taxon cache still respects `BIRDRECORD_CACHE_DIR` and `$XDG_CACHE_HOME/birdrecord/taxon` as in `docs/CLI.zh-CN.md`.
+Each `uvx` run is a clean env; cache paths: `BIRDRECORD_CACHE_DIR`, else `$XDG_CACHE_HOME/birdrecord/taxon`, else `~/.cache/birdrecord/taxon` (`docs/CLI*.md`).
 
 ## Workflow
 
-1. Prefer no **`--refresh`** unless a fresh server snapshot is needed.
-2. Use `-q` with a distinctive substring (Chinese name, Latin epithet, English name, or pinyin).
-3. Parse JSON stdout; use **`taxonid`** when building `--body-json` for `search` (see [birdrecord-search](../birdrecord-search/SKILL.md)).
+1. Skip **`--refresh`** unless you need a fresh server snapshot.
+2. **`-q`:** distinctive substring (Chinese, Latin, English, or pinyin).
+3. Parse stdout JSON; use **`taxonid`** in `search --body-json` → [birdrecord-search](../birdrecord-search/SKILL.md).
 
 ## Related
 
-- Full flags: `docs/CLI.zh-CN.md` / `docs/CLI.md`.
+- Chart search: [birdrecord-search](../birdrecord-search/SKILL.md).
+- Docs: `docs/CLI.md`, `docs/CLI.zh-CN.md`.

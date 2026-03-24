@@ -1,34 +1,40 @@
 ---
 name: birdrecord-report-detail
 description: >-
-  Run birdrecord-cli via uvx with a pinned version: `uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli report --id …`.
-  One observation bundle (detail, summary, author, optional hotspot). 报告详情、report id. Zheng 4 / 郑四.
+  One Birdrecord observation report by id—full bundled detail (郑四). 报告详情.
 ---
 
 # Birdrecord: single report bundle (`report`)
 
 ## When to use
 
-Use when the user has a **report id** (观鸟记录 id string) and needs full detail: report payload, species summary, member profile when applicable, and point/hotspot when linked.
+User has a **report id** (观鸟记录 id) and needs the full bundle: report payload, species summary, member profile when present, linked hotspot.
 
-**Taxonomy**: **郑四** (Zheng 4th ed.) checklist.
+**Taxonomy:** **郑四** (Zheng 4).
 
 ## How to run (agents)
 
-**Always use `uvx`** with a **pinned** `birdrecord-cli==0.1.0` (updated each release).
+**Pin:** `birdrecord-cli==0.1.0` (bump each release).
+
+- **Invoke:** `uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli …`
+- **Chinese or 中文 `--schema`:** `BIRDRECORD_CLI_CN=1` on the same line (truthy; not `0` / `false` / `no` / `off`).
+- **No `uvx`:** `pip install 'birdrecord-cli==0.1.0'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
+- **Avoid** `uv run main.py` from random checkouts unless the user develops **birdrecord-cli** itself.
+
+### `report`
 
 ```bash
 uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli report --id '<REPORT_ID>' [--pretty] [--envelope]
 ```
 
-| Option | Role |
-|--------|------|
-| `--id` | **Required.** Report id string. |
-| `--pretty` | Pretty-print JSON. |
+| Flag | Role |
+|------|------|
+| `--id` | **Required.** Report id. |
+| `--pretty` | Pretty JSON. |
 | `--envelope` | Include API envelope(s). |
-| `--schema` | Print result JSON Schema only (no HTTP). |
+| `--schema` | Schema only, no HTTP. |
 
-Shared HTTP flags (`--token`, `--base-url`, `--timeout`, `--no-verify`) work the same; see `docs/CLI.zh-CN.md`.
+Shared HTTP flags (`--token`, `--base-url`, `--timeout`, `--no-verify`): `docs/CLI.md` / `docs/CLI.zh-CN.md`.
 
 ## Example
 
@@ -38,10 +44,10 @@ uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli report --id 1948816 --pretty
 
 ## Notes
 
-- Output is one aggregated JSON object for “this report”.
-- For chart lists / drill-down, use `search --taxon` / `search --report` via [birdrecord-search](../birdrecord-search/SKILL.md).
+- One aggregated JSON object per report.
+- Chart / drill-down: [birdrecord-search](../birdrecord-search/SKILL.md) (`search --taxon` / `--report`).
 
 ## Related
 
 - Chart search: [birdrecord-search](../birdrecord-search/SKILL.md).
-- Docs: `docs/CLI.zh-CN.md` / `docs/CLI.md`.
+- Docs: `docs/CLI.md`, `docs/CLI.zh-CN.md`.

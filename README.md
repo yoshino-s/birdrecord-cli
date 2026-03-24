@@ -16,10 +16,10 @@ CLI for the [Birdrecord](https://www.birdreport.cn/) / China Bird Record mini-pr
 > [!TIP]
 > ### OpenClaw — TL;DR (Agent Skills)
 >
-> **Copy-paste into OpenClaw** — it can run the install on your machine:
+> **Paste the block below into OpenClaw.**
 >
 > ```
-> Install the Agent Skills from https://github.com/yoshino-s/birdrecord-cli (under skills/) for OpenClaw. Run: npx skills add https://github.com/yoshino-s/birdrecord-cli -a openclaw -y from a suitable directory, then npx skills list to verify. If global install fits my machine better, use -g and say why.
+> Install the Agent Skills from https://github.com/yoshino-s/birdrecord-cli skills.
 > ```
 
 ## Install from PyPI

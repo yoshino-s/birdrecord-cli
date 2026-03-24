@@ -13,13 +13,25 @@
 
 **鸟种**：清单、中文名/拉丁名及 `taxonid` 等均与小程序一致，以 **郑四**（《中国鸟类分类与分布名录》第四版）为准。
 
+> [!NOTE]
+> **国内网络备选（GitCode）**  
+> 若访问 **GitHub**（`github.com`、`raw.githubusercontent.com` 等）**较慢、不稳定或超时**，可将**本仓库**相关地址换用镜像：**[https://gitcode.com/yoshino-s/birdrecord-cli](https://gitcode.com/yoshino-s/birdrecord-cli)**。下文凡同时给出 **方案一（GitHub）** 与 **方案二（GitCode）** 时，在国内网络不佳时请优先采用方案二。
+
 > [!TIP]
 > ### OpenClaw — TL;DR（智能体技能）
 >
-> **把下面整段复制到 OpenClaw**，由它在本机执行安装：
+> **复制下方整段给 OpenClaw 即可。**
+>
+> **方案一（GitHub）**
 >
 > ```
-> 帮我安装 https://github.com/yoshino-s/birdrecord-cli 仓库里 skills/ 目录下的 Agent Skills，并挂到 OpenClaw。请在合适的工作目录执行：npx skills add https://github.com/yoshino-s/birdrecord-cli -a openclaw -y，然后用 npx skills list 确认已装上。若全局安装更合适请改用 -g 并说明原因。
+> 帮我安装 https://github.com/yoshino-s/birdrecord-cli 的 skills
+> ```
+>
+> **方案二（国内网络不佳：GitCode 镜像）**
+>
+> ```
+> 帮我安装 https://gitcode.com/yoshino-s/birdrecord-cli 的 skills
 > ```
 
 ## 从 PyPI 安装
@@ -49,12 +61,22 @@ uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli provinces --pretty
 
 [PEP 723](https://peps.python.org/pep-0723/) 脚本，用 [uv](https://docs.astral.sh/uv/) 自动装依赖。
 
+**方案一（GitHub）**：用 `raw.githubusercontent.com` 直链下载单文件。
+
 ```bash
 curl -fsSL -o main.py 'https://raw.githubusercontent.com/yoshino-s/birdrecord-cli/main/main.py'
 uv run main.py --help
 ```
 
-fork 请改 URL 中的 `yoshino-s` / `main`。
+**方案二（国内网络不佳：GitCode 镜像）**：GitCode 上同类「raw」链接往往会返回网页而非源码，**不建议**用 `curl` 保存 `main.py`。请 **克隆镜像仓库后在目录内运行**（与单文件 `uv run` 效果一致）：
+
+```bash
+git clone https://gitcode.com/yoshino-s/birdrecord-cli.git
+cd birdrecord-cli
+uv run main.py --help
+```
+
+fork 请改 URL 中的 `yoshino-s` / `main`（或对应 GitCode 路径）。
 
 ## 用法
 
@@ -75,7 +97,9 @@ birdrecord-cli search --body-json '{"startTime":"2026-02-24","endTime":"2026-03-
 
 ## 智能体技能（`npx skills`）
 
-本仓库在 [`skills/`](./skills/) 下提供 [Agent Skills](https://agentskills.io)（`birdrecord-search`、`birdrecord-report-detail`、`birdrecord-taxon-search`），便于 **Cursor** 等编码智能体按规范调用 `birdrecord-cli`。**OpenClaw：** 见安装部分最上方带 **TIP** 标记的提示框（在 **从 PyPI 安装** 之前）。手动安装见 [skills CLI](https://github.com/vercel-labs/skills)（[Cursor：Skills](https://cursor.com/docs/context/skills)）：
+本仓库在 [`skills/`](./skills/) 下提供 [Agent Skills](https://agentskills.io)（`birdrecord-search`、`birdrecord-report-detail`、`birdrecord-taxon-search`），便于 **Cursor** 等编码智能体按规范调用 `birdrecord-cli`。**OpenClaw：** 见安装部分最上方 **TIP** 提示框（在 **从 PyPI 安装** 之前；内含 **方案一 GitHub / 方案二 GitCode** 两段可复制话术）。手动安装见 [skills CLI](https://github.com/vercel-labs/skills)（官方仓库在 GitHub，国内访问慢时可稍后再试或使用代理）与 [Cursor：Skills](https://cursor.com/docs/context/skills)：
+
+**方案一（GitHub）** — `owner/repo` 简写默认指向 GitHub：
 
 ```bash
 # 安装全部技能（CLI 会探测已装智能体；有交互提示）
@@ -91,13 +115,28 @@ npx skills add yoshino-s/birdrecord-cli -a cursor -y
 npx skills add yoshino-s/birdrecord-cli --skill birdrecord-search -a cursor -y
 ```
 
-若使用 fork，把 `yoshino-s/birdrecord-cli` 换成你的 `owner/repo`，或使用指向单技能目录的 tree 地址，例如 `https://github.com/yoshino-s/birdrecord-cli/tree/main/skills/birdrecord-search`。
+**方案二（国内网络不佳：GitCode 镜像）** — 使用仓库 **HTTPS 根地址**（将 `github.com/...` 换为 GitCode）：
+
+```bash
+npx skills add https://gitcode.com/yoshino-s/birdrecord-cli --list
+npx skills add https://gitcode.com/yoshino-s/birdrecord-cli -a cursor -y
+npx skills add https://gitcode.com/yoshino-s/birdrecord-cli --skill birdrecord-search -a cursor -y
+```
+
+若使用 fork：方案一把 `yoshino-s/birdrecord-cli` 换成你的 `owner/repo`；方案二把 `https://gitcode.com/yoshino-s/birdrecord-cli` 换成你的 GitCode 仓库 URL。单技能目录 tree 示例 — 方案一：`https://github.com/yoshino-s/birdrecord-cli/tree/main/skills/birdrecord-search`；方案二：`https://gitcode.com/yoshino-s/birdrecord-cli/tree/main/skills/birdrecord-search`。
 
 ## 演示
 
+**方案一（GitHub）** — 下图使用 `raw.githubusercontent.com` 直链：
+
 ![birdrecord-cli 演示](https://raw.githubusercontent.com/yoshino-s/birdrecord-cli/main/docs/birdrecord-demo.gif)
 
+**方案二（国内网络不佳：GitCode 镜像）** — 若上图长时间无法加载，请在浏览器打开 GitCode 仓库中的演示文件：[docs/birdrecord-demo.gif](https://gitcode.com/yoshino-s/birdrecord-cli/blob/main/docs/birdrecord-demo.gif)（或进入 [**gitcode.com/yoshino-s/birdrecord-cli**](https://gitcode.com/yoshino-s/birdrecord-cli) 后浏览 `docs/` 目录）。
+
 ## 开发
+
+**方案一（GitHub）** `git clone https://github.com/yoshino-s/birdrecord-cli.git`  
+**方案二（国内网络不佳：GitCode 镜像）** `git clone https://gitcode.com/yoshino-s/birdrecord-cli.git`
 
 克隆后 `uv sync --group dev && uv run pytest tests/ -v`（部分请求线上 API；部分 `verify=False`）。测试经 [`birdrecord_client.py`](./birdrecord_client.py) 导入。
 

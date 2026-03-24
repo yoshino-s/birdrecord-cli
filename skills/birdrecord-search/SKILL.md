@@ -1,55 +1,47 @@
 ---
 name: birdrecord-search
 description: >-
-  Run birdrecord-cli via uvx with a pinned version: `uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli …`.
-  Chart `search` (per-month aggregates, rolled-up totals, optional `--taxon` / `--report`).
-  Before `search`: validate region with `provinces` / `cities`; if missing, tell the user; ask user to confirm params first.
-  Use for observation statistics, chart filters, 记录统计、按月统计、图表检索、活动下钻. Zheng 4 / 郑四.
+  Birdrecord chart observation statistics and filters (郑四); optional activity drill-down. 记录统计、按月统计、图表检索、活动下钻.
 ---
 
 # Birdrecord: chart search (`search`)
 
 ## When to use
 
-Use for **chart-level statistics** (same filters as the mini-program chart search). Add **`--taxon`** and/or **`--report`** only for **activity drill-down**. If neither flag is set, the CLI does **not** call those endpoints.
+**Chart-level statistics** (same filters as the mini-program chart search). Use **`--taxon`** / **`--report`** only for **activity drill-down**; without them, those APIs are not called.
 
-**Taxonomy**: `taxonname` / `taxonid` follow **郑四** (Zheng 4th ed.), same as the app.
+**Taxonomy:** `taxonname` / `taxonid` = **郑四** (Zheng 4), same as the app.
 
-## Region and parameters (required workflow)
+## Region and parameters
 
-1. **Validate geography before `search`**  
-   Chart filters use **Chinese labels** for `province`, `city`, and `district` (see request table). Those strings must match what Birdrecord’s adcode APIs return — not free text.  
-   - Run **`birdrecord-cli provinces`** (optional **`-q` / `--query`**: Chinese, pinyin, or initials) and confirm the user’s province appears (exact **`province_name`** you will put in JSON).  
-   - If the search body includes **`city`**, take the province’s **`province_code`**, run **`birdrecord-cli cities --province-code <code>`** (optional **`-q`**), and confirm the city exists (**`city_name`** must match).  
-   - If you use **`district`**, only proceed when you have a reliable way to match it to app data; when unsure, **do not guess** — say so and ask the user.
-
-2. **When validation fails**  
-   If **`provinces`** / **`cities`** (with or without `-q`) shows **no row** that matches what the user asked for, **stop** and **tell the user clearly** that the place does not appear in Birdrecord’s region list (or the spelling/filter does not match). **Do not** run **`search`** with unverified `province` / `city` / `district` and pretend the result is valid.
-
-3. **User confirmation before query**  
-   Before the first **`search`** call (and before heavy drill-down with **`--taxon`** / **`--report`**), **summarize the intended parameters** (date range, province/city/district as validated, species / `taxonid` if any, other filters) and **ask the user to confirm** they are correct. Only run **`search`** after confirmation (or if the user already stated them explicitly as final in the same turn and nothing ambiguous remains).
+1. **Before `search`:** `province` / `city` / `district` must be **exact Chinese labels** from Birdrecord adcode APIs—not free text. Run **`birdrecord-cli provinces`** (optional **`-q`**: Chinese, pinyin, initials); if JSON has **`city`**, run **`birdrecord-cli cities --province-code <code>`** (optional **`-q`**). **`district`:** only if you can match app data; else stop and ask.
+2. **No matching row** in `provinces` / `cities` → **stop**; tell the user; do **not** run `search` with guessed names.
+3. **Before first `search`** (and before heavy `--taxon` / `--report`): summarize filters and **get user confirmation** unless they already gave a final, unambiguous spec.
 
 ## How to run (agents)
 
-**Always use `uvx`** with a **pinned** package version so runs stay reproducible. The pin must match the released line in this skill (`birdrecord-cli==0.1.0`); it is updated on each release.
+**Pin:** `birdrecord-cli==0.1.0` (bump each release).
+
+- **Invoke:** `uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli …`
+- **Chinese or 中文 `--schema`:** `BIRDRECORD_CLI_CN=1` on the same line (truthy; not `0` / `false` / `no` / `off`).
+- **No `uvx`:** `pip install 'birdrecord-cli==0.1.0'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
+- **Avoid** `uv run main.py` from random checkouts unless the user develops **birdrecord-cli** itself.
+
+### `search`
 
 ```bash
-# Statistics only: stdout is { "by_month", "total" }
+# stdout { by_month, total }
 uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli search --body-json '<JSON>' [--pretty] [--envelope]
 
-# Plus activity APIs (combine as needed)
 uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli search --taxon --body-json '<JSON>' [--pretty]
 uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli search --report --body-json '<JSON>' [--pretty]
 uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli search --taxon --report --body-json '<JSON>' [--pretty]
 ```
 
-- **`--body-json`**: Filter object aligned with the app chart search; `{}` or omit still hits the API with coerced defaults.
-- **`--schema`**: JSON Schemas only (no HTTP).
-- **`BIRDRECORD_CLI_CN`**: Truthy (not `0` / `false` / `no` / `off`) → Chinese schema descriptions.
+- **`--body-json`:** chart filter object; `{}` / omit still hits API with defaults.
+- **`--schema`:** schemas only, no HTTP.
 
-Do **not** default to `uv run main.py` from a random checkout unless the user explicitly works inside this repository; prefer **`uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli …`** as above.
-
-**Region lookup** (same pin):
+### Region prefetch
 
 ```bash
 uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli provinces [-q '<filter>'] [--pretty]
@@ -60,14 +52,14 @@ uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli cities --province-code '<6-dig
 
 | Mode | stdout JSON |
 |------|-------------|
-| No `--taxon` / `--report` | Top-level **`by_month`** and **`total`**. |
-| With `--taxon` and/or `--report` | **`statistic`** plus optional **`taxon`** / **`report`** arrays. |
+| No `--taxon` / `--report` | **`by_month`**, **`total`**. |
+| With `--taxon` and/or `--report` | **`statistic`** + optional **`taxon`** / **`report`**. |
 
-With **`--envelope`**, activity envelopes appear under `taxon` / `report` keys alongside chart envelopes.
+With **`--envelope`**, activity envelopes sit under `taxon` / `report` next to chart envelopes.
 
 ## Request fields (chart)
 
-Coerced to **`RegionChartQueryBody`**; with activity flags, same JSON also becomes **`CommonActivityQueryBody`** (`taxonid` string on that path).
+Coerced to **`RegionChartQueryBody`**; with activity flags, same JSON is also **`CommonActivityQueryBody`** (`taxonid` string on that path).
 
 | Field | Notes |
 |-------|--------|
@@ -75,10 +67,10 @@ Coerced to **`RegionChartQueryBody`**; with activity flags, same JSON also becom
 | `startTime`, `endTime` | `YYYY-MM-DD`. |
 | `province`, `city`, `district` | Chinese labels. |
 | `pointname` | Hotspot substring. |
-| `taxonid` | Int in chart filters (`0` = unset); string in activity APIs. |
-| `serial_id`, `ctime`, `username`, `version` | As in app traffic; `version` default `CH4`. |
+| `taxonid` | Int in chart (`0` = unset); string in activity APIs. |
+| `serial_id`, `ctime`, `username`, `version` | As in app; `version` default `CH4`. |
 
-Do not set `sqlid` manually — the client overwrites it per request.
+Do not set `sqlid`—the client overwrites it.
 
 ## Example
 
@@ -90,7 +82,6 @@ uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli search \
 
 ## Related
 
-- Region lists (`provinces` / `cities`): same CLI; see **Region and parameters** above.
-- Species ids: [birdrecord-taxon-search](../birdrecord-taxon-search/SKILL.md).
+- Taxon ids: [birdrecord-taxon-search](../birdrecord-taxon-search/SKILL.md).
 - Single report: [birdrecord-report-detail](../birdrecord-report-detail/SKILL.md).
 - Docs: `docs/CLI.md`, `docs/CLI.zh-CN.md`.
