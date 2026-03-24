@@ -1,3 +1,11 @@
+> **⚠️ 声明（非官方）**
+>
+> **本项目并非** [中国观鸟记录中心](https://www.birdreport.cn/) **的官方项目**，与其无隶属或授权关系。**仅供个人研究使用，禁止滥用。** 数据解释权归中国观鸟记录中心所有。
+>
+> *This repository is **not** an official project of [中国观鸟记录中心](https://www.birdreport.cn/). **Personal research only; misuse is prohibited.** Interpretation of data belongs to 中国观鸟记录中心.*
+
+---
+
 # Birdrecord CLI
 
 CLI for the [Birdrecord](https://www.birdreport.cn/) / China Bird Record mini-program API. HTTP defaults to API host `https://weixin.birdrecord.cn` (override with `--base-url`); the [portal site](https://www.birdreport.cn/) is separate.
@@ -57,7 +65,7 @@ Environment variables:
 
 ## Demo
 
-![birdrecord-cli demo](docs/birdrecord-demo.gif)
+![birdrecord-cli demo](https://raw.githubusercontent.com/yoshino-s/birdrecord-cli/main/docs/birdrecord-demo.gif)
 
 ## Development
 
