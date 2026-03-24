@@ -12,6 +12,15 @@
 
 **鸟种**：清单、中文名/拉丁名及 `taxonid` 等均与小程序一致，以 **郑四**（《中国鸟类分类与分布名录》第四版）为准。
 
+> [!TIP]
+> ### OpenClaw — TL;DR（智能体技能）
+>
+> **把下面整段复制到 OpenClaw**，由它在本机执行安装：
+>
+> ```
+> 帮我安装 https://github.com/yoshino-s/birdrecord-cli 仓库里 skills/ 目录下的 Agent Skills，并挂到 OpenClaw。请在合适的工作目录执行：npx skills add https://github.com/yoshino-s/birdrecord-cli -a openclaw -y，然后用 npx skills list 确认已装上。若全局安装更合适请改用 -g 并说明原因。
+> ```
+
 ## 从 PyPI 安装
 
 需要 **Python 3.12+**。
@@ -62,6 +71,26 @@ birdrecord-cli search --body-json '{"startTime":"2026-02-24","endTime":"2026-03-
 
 - `BIRDRECORD_CACHE_DIR`：物种表缓存根目录（可选，文件在 `…/taxon`）；未设置时优先 `$XDG_CACHE_HOME/birdrecord/taxon`，否则 `~/.cache/birdrecord/taxon`。
 - `BIRDRECORD_CLI_CN`：设为非 `0` / `false` / `no` / `off` 的任意真值时，`--schema` 等 JSON Schema 描述为中文。
+
+## 智能体技能（`npx skills`）
+
+本仓库在 [`skills/`](./skills/) 下提供 [Agent Skills](https://agentskills.io)（`birdrecord-search`、`birdrecord-report-detail`、`birdrecord-taxon-search`），便于 **Cursor** 等编码智能体按规范调用 `birdrecord-cli`。**OpenClaw：** 见安装部分最上方带 **TIP** 标记的提示框（在 **从 PyPI 安装** 之前）。手动安装见 [skills CLI](https://github.com/vercel-labs/skills)（[Cursor：Skills](https://cursor.com/docs/context/skills)）：
+
+```bash
+# 安装全部技能（CLI 会探测已装智能体；有交互提示）
+npx skills add yoshino-s/birdrecord-cli
+
+# 只列出可安装项，不安装
+npx skills add yoshino-s/birdrecord-cli --list
+
+# 仅 Cursor、跳过确认（适合脚本）
+npx skills add yoshino-s/birdrecord-cli -a cursor -y
+
+# 只装某一个技能
+npx skills add yoshino-s/birdrecord-cli --skill birdrecord-search -a cursor -y
+```
+
+若使用 fork，把 `yoshino-s/birdrecord-cli` 换成你的 `owner/repo`，或使用指向单技能目录的 tree 地址，例如 `https://github.com/yoshino-s/birdrecord-cli/tree/main/skills/birdrecord-search`。
 
 ## 演示
 
