@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "birdrecord-cli"
+version = "0.1.0"
+description = "CLI for China Bird Record (birdreport.cn); default API host weixin.birdrecord.cn (single-file main.py + uv)."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+authors = [{ name = "yoshino-s" }]
+keywords = ["birdrecord", "birding", "cli", "weixin", "miniprogram", "httpx", "click"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+]
+# Same set as the PEP 723 block in main.py (for clone + uv sync + pytest).
+dependencies = [
+    "click>=8.1.0",
+    "httpx>=0.28.1",
+    "pycryptodome>=3.21.0",
+    "pydantic>=2.10.0",
+    "pypinyin>=0.53.0",
+]
+
+[project.scripts]
+birdrecord-cli = "main:main"
+
+[project.urls]
+Homepage = "https://github.com/yoshino-s/birdrecord-cli"
+Repository = "https://github.com/yoshino-s/birdrecord-cli"
+Documentation = "https://github.com/yoshino-s/birdrecord-cli#readme"
+Issues = "https://github.com/yoshino-s/birdrecord-cli/issues"
+Changelog = "https://github.com/yoshino-s/birdrecord-cli/releases"
+PyPI = "https://pypi.org/project/birdrecord-cli/"
+
+[dependency-groups]
+dev = [
+    "build>=1.2.0",
+    "mypy>=1.19.1",
+    "pytest>=8.0.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.15.7",
+]
+
+[tool.setuptools]
+py-modules = ["main", "birdrecord_client"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
