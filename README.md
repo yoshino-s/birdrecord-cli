@@ -39,22 +39,11 @@ Package index: [pypi.org/project/birdrecord-cli](https://pypi.org/project/birdre
 [uv](https://docs.astral.sh/uv/) downloads the package into an ephemeral environment. Pin the version for reproducible behavior:
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli --help
-uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli provinces --pretty
+uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli --help
+uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli provinces --pretty
 ```
 
 Use the latest release version from PyPI if it differs from the example above.
-
-## Single-file + uv (no install)
-
-[PEP 723](https://peps.python.org/pep-0723/) script; [uv](https://docs.astral.sh/uv/) installs deps automatically.
-
-```bash
-curl -fsSL -o main.py 'https://raw.githubusercontent.com/yoshino-s/birdrecord-cli/main/main.py'
-uv run main.py --help
-```
-
-For a fork, change `yoshino-s` and/or `main` in the URL.
 
 ## Usage
 
@@ -65,8 +54,6 @@ birdrecord-cli provinces --pretty
 birdrecord-cli report --id 1948816 --pretty
 birdrecord-cli search --body-json '{"startTime":"2026-02-24","endTime":"2026-03-24","province":"河北省","taxonid":4148,"version":"CH4"}' --pretty
 ```
-
-(With `uv run main.py`, use the same subcommands after `uv run main.py`.)
 
 Environment variables:
 
@@ -99,11 +86,15 @@ For a fork, use `owner/repo` instead of `yoshino-s/birdrecord-cli`, or a direct 
 
 ## Development
 
-Clone, then `uv sync --group dev && uv run pytest tests/ -v` (some tests hit the live API; some use `verify=False`). Tests import via [`birdrecord_client.py`](./birdrecord_client.py).
+Clone, then `uv sync --group dev && uv run pytest tests/ -v` (some tests hit the live API; some use `verify=False`). Library code lives under [`birdrecord_cli/`](./birdrecord_cli/). Run the CLI from a dev tree with `uv run birdrecord-cli …`.
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Contact
+
+[cy-cui@outlook.com](mailto:cy-cui@outlook.com)
 
 ---
 

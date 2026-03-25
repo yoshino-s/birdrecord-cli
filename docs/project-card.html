@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1200, height=630" />
+  <title>Birdrecord CLI — project card</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #0c4a6e;
+    }
+    .card {
+      width: 1200px;
+      height: 630px;
+      position: relative;
+      background: linear-gradient(145deg, #0e7490 0%, #0c4a6e 42%, #082f49 100%);
+      color: #f0f9ff;
+      padding: 56px 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 100% 0%, rgba(56, 189, 248, 0.25), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 0% 100%, rgba(34, 197, 94, 0.12), transparent 50%);
+      pointer-events: none;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.2);
+    }
+    .subtitle {
+      font-size: 22px;
+      font-weight: 500;
+      color: #bae6fd;
+      max-width: 820px;
+      line-height: 1.45;
+      margin-bottom: 36px;
+    }
+    .features {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .pill {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #e0f2fe;
+    }
+    .meta {
+      font-size: 15px;
+      color: #94a3b8;
+      margin-top: 20px;
+    }
+    .meta strong {
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+    }
+    .disclaimer {
+      font-size: 11px;
+      line-height: 1.5;
+      color: rgba(148, 163, 184, 0.95);
+      max-width: 720px;
+    }
+    .repo {
+      font-size: 15px;
+      font-weight: 600;
+      color: #38bdf8;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="content">
+      <div class="badge">Open source · Python</div>
+      <h1>Birdrecord CLI</h1>
+      <p class="subtitle">
+        Command-line tool and Agent Skills for China Bird Record data — look up species,
+        search observation records, and fetch full report detail by id.
+      </p>
+      <div class="features">
+        <span class="pill">Species checklist</span>
+        <span class="pill">Record search &amp; stats</span>
+        <span class="pill">Report detail</span>
+        <span class="pill">Zheng 4 taxonomy</span>
+      </div>
+      <p class="meta"><strong>Includes</strong> Cursor / OpenClaw-ready skills · <code style="color:#7dd3fc">pip</code> &amp; <code style="color:#7dd3fc">uvx</code></p>
+    </div>
+    <footer>
+      <p class="disclaimer">
+        Not affiliated with birdreport.cn or the China Bird Record Center. Personal research only; do not misuse.
+        Data interpretation rights belong to the center.
+      </p>
+      <div class="repo">github.com/yoshino-s/birdrecord-cli</div>
+    </footer>
+  </div>
+</body>
+</html>

@@ -14,17 +14,17 @@ User has a **report id** (观鸟记录 id) and needs the full bundle: report pay
 
 ## How to run (agents)
 
-**Pin:** `birdrecord-cli==0.1.0` (bump each release).
+**Pin:** `birdrecord-cli==0.1.1` (bump each release).
 
-- **Invoke:** `uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli …`
+- **Invoke:** `uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli …`
 - **Chinese or 中文 `--schema`:** `BIRDRECORD_CLI_CN=1` on the same line (truthy; not `0` / `false` / `no` / `off`).
-- **No `uvx`:** `pip install 'birdrecord-cli==0.1.0'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
-- **Avoid** `uv run main.py` from random checkouts unless the user develops **birdrecord-cli** itself.
+- **No `uvx`:** `pip install 'birdrecord-cli==0.1.1'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
+- **Avoid** running ad-hoc copies of the repo unless the user is developing **birdrecord-cli** itself; use **`uvx`** / **`pip`** + **`birdrecord-cli`** for normal use.
 
 ### `report`
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli report --id '<REPORT_ID>' [--pretty] [--envelope]
+uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli report --id '<REPORT_ID>' [--pretty] [--envelope]
 ```
 
 | Flag | Role |
@@ -39,7 +39,7 @@ Shared HTTP flags (`--token`, `--base-url`, `--timeout`, `--no-verify`): `docs/C
 ## Example
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli report --id 1948816 --pretty
+uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli report --id 1948816 --pretty
 ```
 
 ## Notes

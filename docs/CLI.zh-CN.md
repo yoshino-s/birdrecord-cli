@@ -1,12 +1,12 @@
 # 命令行参考（CLI）
 
-程序内建的帮助文案是英文（Click）。下面 **「程序原文」** 区块来自本仓库当前版本的真实输出：`birdrecord-cli … --help`（或 `uv run main.py … --help`）。若你本地版本不同，请以本机 `--help` 为准。
+程序内建的帮助文案是英文（Click）。下面 **「程序原文」** 区块来自本仓库当前版本的真实输出：`birdrecord-cli … --help`。若你本地版本不同，请以本机 `--help` 为准。
 
 ## 中文速览
 
 ### 全局（入口）
 
-- `birdrecord-cli`（或 `uv run main.py`）：根命令，只接受 `-h` / `--help`；具体能力在子命令上。
+- `birdrecord-cli`：根命令，只接受 `-h` / `--help`；具体能力在子命令上。
 
 ### 多数子命令共用的 HTTP / 输出选项
 
@@ -28,7 +28,7 @@
 | `cities` | 某省下属城市；**必填** `--province-code`（6 位行政区划码，如 `110000`）。 |
 | `taxon` | 拉取并缓存完整物种表；`--version` 指定清单版本；`-q` / `--query` 按名称/拉丁名/英文名/拼音/首字母过滤；`--refresh` 忽略缓存重拉；缓存目录可用环境变量 `BIRDRECORD_CACHE_DIR`。 |
 | `report` | 单条观鸟记录聚合；**必填** `--id`（记录 id 字符串）。 |
-| `search` | 图表检索统计（默认仅统计）；活动下钻用 `--taxon`（种排行）和/或 `--report`（分页记录），**不传则不查**；`--body-json` 与小程序图表筛选一致，不要手写 `sqlid`。带下钻时 stdout 为 `{ "statistic", "taxon"?, "report"? }`；仅统计时为顶层 `by_month` / `total`。 |
+| `search` | 图表检索：`--body-json` 为统一 **UnifiedSearchRequest**（图表字段 + 可选 `taxon_month` / `report_month` / `outside_type`）；`--taxon` / `--report` 控制下钻。stdout 恒为 **UnifiedSearchResult**：`statistic` + `taxon`（未传 `--taxon` 则为 `null`）+ `report`（未传 `--report` 则为 `null`）。 |
 
 ### 环境变量
 
@@ -153,10 +153,10 @@ Options:
   --taxon           Include per-species record counts for the chart month
                     (common/list).
   --report          Include paged observation report cards (common/page).
-  --body-json TEXT  Filter fields as JSON (chart statistic; activity drill-
-                    down uses the same object, coerced per API).
-  --schema          Print JSON Schemas for filters and responses only (no
-                    HTTP).
+  --body-json TEXT  统一筛选 JSON（UnifiedSearchRequest）：图表字段 + 下钻可选
+                    taxon_month、report_month、outside_type。
+  --schema          仅打印请求（UnifiedSearchRequest）与响应（UnifiedSearchResult）的 JSON
+                    Schema（不发起 HTTP）。
   --envelope        Include wire envelope(s) in JSON output.
   --pretty          Pretty-print JSON.
   --timeout FLOAT   HTTP timeout (seconds).  [default: 60.0]
@@ -168,9 +168,23 @@ Options:
 
 ### `search` 输出（JSON）
 
-- **不传 `--taxon` / `--report`**：与旧版 `search-statistic` 相同，顶层为 `by_month`、`total`。
-- **传了其一或两者**：根对象含 `statistic`（上述统计嵌套在内），并按所传标志附带 `taxon` / `report` 数组。
-- **`--envelope`**：统计相关 envelope 结构不变；活动接口的 envelope 在勾选对应标志时出现在 `taxon` / `report` 键下。
+始终同一结构：**`statistic`**（内含完整 `startTime`–`endTime` 的 **`by_month`**、**`total`**）、**`taxon`**、**`report`**。
+
+- **`taxon`**：未传 `--taxon` 时为 **`null`**；传了则为数组（可为空）。
+- **`report`**：未传 `--report` 时为 **`null`**；传了则为数组。
+- **`--envelope`**：`envelope` 内多键结构照旧；`payload` 仍为上述 `statistic` + `taxon` + `report`。
+
+### `search` 的 `--body-json`（`UnifiedSearchRequest`）
+
+在图表筛选（`RegionChartRequest`）之上增加**仅下钻用**字段：
+
+| 字段 | 何时需要 |
+|------|----------|
+| `taxon_month` | **仅**在传 **`--taxon`** 时生效。两位月份 `01`–`12`（如 `03`）：在日期范围内只取该公历月的记录参与**鸟种列表**；留空则范围内各月都参与列表。**不改变** `statistic.by_month` / `statistic.total`（全局统计仍按完整区间）。 |
+| `report_month` | **仅**在传 **`--report`** 时生效。与 `taxon_month` 同形，用于**分页记录列表**；同时下钻时建议与 `taxon_month` 对齐。**不改变**图表统计。 |
+| `outside_type` | 下钻时传给 common/list、common/page；默认 `0` 与抓包一致。 |
+
+**不需要**按月钉死列表时：不传或置空 `taxon_month` / `report_month`（仅要统计、或要全区间列表时不必填）。
 
 ---
 

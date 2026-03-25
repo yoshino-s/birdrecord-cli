@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "birdrecord-cli"
-version = "0.1.0"
-description = "CLI for China Bird Record (birdreport.cn); default API host weixin.birdrecord.cn (single-file main.py + uv)."
+version = "0.1.1"
+description = "CLI for China Bird Record (birdreport.cn); default API host weixin.birdrecord.cn."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -21,7 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Internet :: WWW/HTTP",
 ]
-# Same set as the PEP 723 block in main.py (for clone + uv sync + pytest).
+# Keep in sync with birdrecord_cli (clone + uv sync + pytest).
 dependencies = [
     "click>=8.1.0",
     "httpx>=0.28.1",
@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [project.scripts]
-birdrecord-cli = "main:main"
+birdrecord-cli = "birdrecord_cli.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/yoshino-s/birdrecord-cli"
@@ -50,8 +50,9 @@ dev = [
     "ruff>=0.15.7",
 ]
 
-[tool.setuptools]
-py-modules = ["main", "birdrecord_client"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["birdrecord_cli*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

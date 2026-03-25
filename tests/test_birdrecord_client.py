@@ -9,37 +9,43 @@ from __future__ import annotations
 
 import pytest
 
-from birdrecord_client import (
+from birdrecord_cli.client import BirdrecordClient
+from birdrecord_cli.constants import DEFAULT_TAXON_VERSION
+from birdrecord_cli.models import (
     AdcodeCityRequest,
     AdcodeProvinceRequest,
-    CityRow,
     ChartActivityReportRow,
     ChartActivityTaxonRow,
+    CityRow,
     CommonChartBundleGrouped,
-    DubiousAccurateCounts,
-    MonthSearchEntry,
-    RegionChartQueryBody,
-    SearchStatisticResult,
-    TaxonMonthSlice,
     CommonListActivityTaxonRequest,
     CommonPageActivityRequest,
+    DubiousAccurateCounts,
     MemberProfilePayload,
+    MonthSearchEntry,
+    ProvinceRow,
+    RegionChartRequest,
+    ReportBundleResult,
+    ReportDetailPayload,
+    ReportGetRequest,
     RecordSummaryPayload,
     RecordSummaryRequest,
-    ReportDetailPayload,
-    ReportBundleResult,
-    ReportGetRequest,
+    SearchStatisticResult,
     StandardApiEnvelope,
-    TaxonSearchRequest,
+    TaxonMonthSlice,
     TaxonRow,
-    BirdrecordClient,
-    DEFAULT_TAXON_VERSION,
-    ProvinceRow,
-    filter_region_rows_by_query,
-    filter_taxon_rows_by_query,
+    TaxonSearchRequest,
+    UnifiedSearchRequest,
+    _load_taxon_search_disk,
+    _save_taxon_search_disk,
     build_common_list_taxon_request,
     build_common_page_activity_request,
-    coerce_common_activity_body,
+    coerce_common_activity_request,
+    coerce_unified_search_request,
+    filter_region_rows_by_query,
+    filter_taxon_rows_by_query,
+    unified_search_to_common_activity,
+    unified_search_to_region_chart,
 )
 
 
@@ -57,13 +63,37 @@ def test_common_activity_body_builds_sqlid_requests():
         "taxon_month": "03",
         "outside_type": 0,
     }
-    base = coerce_common_activity_body(raw)
+    base = coerce_common_activity_request(raw)
     lt = build_common_list_taxon_request(base)
     assert lt.sqlid == "searchChartActivityTaxon"
     pg = build_common_page_activity_request(base)
     assert pg.sqlid == "searchChartActivity"
     assert pg.start == 1
     assert pg.limit == 15
+    assert pg.report_month == ""
+    pg2 = build_common_page_activity_request(base, report_month="03")
+    assert pg2.report_month == "03"
+
+
+def test_unified_search_request_month_fields() -> None:
+    u = coerce_unified_search_request(
+        {
+            "startTime": "2025-01-01",
+            "endTime": "2026-12-31",
+            "province": "河北省",
+            "taxon_month": "03",
+            "report_month": "03",
+            "taxonid": 4148,
+        }
+    )
+    assert isinstance(u, UnifiedSearchRequest)
+    rc = unified_search_to_region_chart(u)
+    assert "taxon_month" not in rc.model_dump()
+    assert rc.taxonid == 4148
+    act = unified_search_to_common_activity(u)
+    assert act.taxon_month == "03"
+    assert act.taxonid == "4148"
+    assert "report_month" not in act.model_dump()
 
 
 def test_request_models_serialize():
@@ -91,7 +121,6 @@ def test_adcode_cities(client: BirdrecordClient) -> None:
 
 def test_taxon_disk_cache_roundtrip(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     monkeypatch.setenv("BIRDRECORD_CACHE_DIR", str(tmp_path))
-    import birdrecord_client as brc
 
     rows = [
         TaxonRow(
@@ -101,8 +130,8 @@ def test_taxon_disk_cache_roundtrip(monkeypatch: pytest.MonkeyPatch, tmp_path) -
         ),
     ]
     env = {"code": 0, "count": 1}
-    brc._save_taxon_search_disk("test-version-xyz", env, rows)
-    loaded = brc._load_taxon_search_disk("test-version-xyz")
+    _save_taxon_search_disk("test-version-xyz", env, rows)
+    loaded = _load_taxon_search_disk("test-version-xyz")
     assert loaded is not None
     env2, rows2 = loaded
     assert env2["code"] == 0
@@ -181,7 +210,7 @@ def test_taxon_search_uses_default_version(client: BirdrecordClient) -> None:
 
 
 def test_fetch_search_statistic(client: BirdrecordClient) -> None:
-    body = RegionChartQueryBody(
+    body = RegionChartRequest(
         taxonname="",
         startTime="2026-02-24",
         endTime="2026-03-24",

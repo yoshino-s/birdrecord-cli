@@ -1,6 +1,6 @@
 # CLI reference
 
-Help text below is copied from the real program (`birdrecord-cli` / `uv run main.py`, Click). Run `birdrecord-cli <command> --help` locally if your version differs.
+Help text below is copied from the real program (`birdrecord-cli`, Click). Run `birdrecord-cli <command> --help` locally if your version differs.
 
 ## Top level
 
@@ -115,10 +115,11 @@ Options:
   --taxon           Include per-species record counts for the chart month
                     (common/list).
   --report          Include paged observation report cards (common/page).
-  --body-json TEXT  Filter fields as JSON (chart statistic; activity drill-
-                    down uses the same object, coerced per API).
-  --schema          Print JSON Schemas for filters and responses only (no
-                    HTTP).
+  --body-json TEXT  Unified filter JSON (UnifiedSearchRequest): chart fields plus
+                    optional taxon_month, report_month, outside_type for
+                    drill-down.
+  --schema          Print JSON Schemas for request (UnifiedSearchRequest) and
+                    response (UnifiedSearchResult) only (no HTTP).
   --envelope        Include wire envelope(s) in JSON output.
   --pretty          Pretty-print JSON.
   --timeout FLOAT   HTTP timeout (seconds).  [default: 60.0]
@@ -130,9 +131,23 @@ Options:
 
 ### `search` output (JSON)
 
-- **No `--taxon` / `--report`**: The printed object is the chart statistic only: top-level `by_month` and `total` (same as the former `search-statistic` command).
-- **With `--taxon` and/or `--report`**: The object has `statistic` (that same chart payload nested), plus `taxon` and/or `report` arrays only for the flags you passed.
-- **`--envelope`**: Statistic calls use the existing multi-key envelope; activity calls add `taxon` / `report` envelope entries when those flags are set.
+Always one shape: **`statistic`** (with **`by_month`** and **`total`** for the full `startTime`–`endTime` range), **`taxon`**, **`report`**.
+
+- **`taxon`**: `null` if `--taxon` was not passed; otherwise an array (possibly empty) of species ranking rows.
+- **`report`**: `null` if `--report` was not passed; otherwise an array of paged report cards.
+- **`--envelope`**: Same keys as before under `envelope`; the merged payload is still `statistic` + `taxon` + `report` as above.
+
+### `search` body JSON (`UnifiedSearchRequest`)
+
+Extends chart filters (`RegionChartRequest`) with optional drill-down-only fields:
+
+| Field | When it matters |
+|-------|-----------------|
+| `taxon_month` | Only with **`--taxon`**. Two-digit month (`01`–`12`, e.g. `03`): restrict the species list to records in that calendar month inside the range; empty = every month in the range. **Does not** change `statistic.by_month` / `statistic.total`. |
+| `report_month` | Only with **`--report`**. Same idea for paged report cards; align with `taxon_month` when using both flags. **Does not** change chart statistics. |
+| `outside_type` | Passed to activity APIs when drilling down; default `0` matches captured traffic. |
+
+Omit `taxon_month` / `report_month` (or leave them `""`) when you only need chart statistics or full-range lists without pinning to one month.
 
 ## Shared HTTP / output flags
 

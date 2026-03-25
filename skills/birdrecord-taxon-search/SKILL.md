@@ -16,17 +16,17 @@ description: >-
 
 ## How to run (agents)
 
-**Pin:** `birdrecord-cli==0.1.0` (bump each release).
+**Pin:** `birdrecord-cli==0.1.1` (bump each release).
 
-- **Invoke:** `uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli …`
+- **Invoke:** `uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli …`
 - **Chinese or 中文 `--schema`:** `BIRDRECORD_CLI_CN=1` on the same line (truthy; not `0` / `false` / `no` / `off`).
-- **No `uvx`:** `pip install 'birdrecord-cli==0.1.0'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
-- **Avoid** `uv run main.py` from random checkouts unless the user develops **birdrecord-cli** itself.
+- **No `uvx`:** `pip install 'birdrecord-cli==0.1.1'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
+- **Avoid** ad-hoc repo checkouts unless developing **birdrecord-cli**; prefer **`uvx`** / **`pip`** + **`birdrecord-cli`**.
 
 ### `taxon`
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli taxon [OPTIONS]
+uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli taxon [OPTIONS]
 ```
 
 | Flag | Role |

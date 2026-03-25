@@ -51,32 +51,11 @@ birdrecord-cli --help
 [uv](https://docs.astral.sh/uv/) 会临时拉取包。建议 **固定版本** 以便结果可复现：
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli --help
-uvx --from 'birdrecord-cli==0.1.0' birdrecord-cli provinces --pretty
+uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli --help
+uvx --from 'birdrecord-cli==0.1.1' birdrecord-cli provinces --pretty
 ```
 
 示例中的版本号请以 PyPI 当前最新版为准。
-
-## 单文件 + uv（不安装包）
-
-[PEP 723](https://peps.python.org/pep-0723/) 脚本，用 [uv](https://docs.astral.sh/uv/) 自动装依赖。
-
-**方案一（GitHub）**：用 `raw.githubusercontent.com` 直链下载单文件。
-
-```bash
-curl -fsSL -o main.py 'https://raw.githubusercontent.com/yoshino-s/birdrecord-cli/main/main.py'
-uv run main.py --help
-```
-
-**方案二（国内网络不佳：GitCode 镜像）**：GitCode 上同类「raw」链接往往会返回网页而非源码，**不建议**用 `curl` 保存 `main.py`。请 **克隆镜像仓库后在目录内运行**（与单文件 `uv run` 效果一致）：
-
-```bash
-git clone https://gitcode.com/yoshino-s/birdrecord-cli.git
-cd birdrecord-cli
-uv run main.py --help
-```
-
-fork 请改 URL 中的 `yoshino-s` / `main`（或对应 GitCode 路径）。
 
 ## 用法
 
@@ -87,8 +66,6 @@ birdrecord-cli provinces --pretty
 birdrecord-cli report --id 1948816 --pretty
 birdrecord-cli search --body-json '{"startTime":"2026-02-24","endTime":"2026-03-24","province":"河北省","taxonid":4148,"version":"CH4"}' --pretty
 ```
-
-（若用 `uv run main.py`，在命令后接相同子命令即可。）
 
 环境变量：
 
@@ -127,18 +104,11 @@ npx skills add https://gitcode.com/yoshino-s/birdrecord-cli --skill birdrecord-s
 
 ## 演示
 
-**方案一（GitHub）** — 下图使用 `raw.githubusercontent.com` 直链：
-
 ![birdrecord-cli 演示](https://raw.githubusercontent.com/yoshino-s/birdrecord-cli/main/docs/birdrecord-demo.gif)
-
-**方案二（国内网络不佳：GitCode 镜像）** — 若上图长时间无法加载，请在浏览器打开 GitCode 仓库中的演示文件：[docs/birdrecord-demo.gif](https://gitcode.com/yoshino-s/birdrecord-cli/blob/main/docs/birdrecord-demo.gif)（或进入 [**gitcode.com/yoshino-s/birdrecord-cli**](https://gitcode.com/yoshino-s/birdrecord-cli) 后浏览 `docs/` 目录）。
 
 ## 开发
 
-**方案一（GitHub）** `git clone https://github.com/yoshino-s/birdrecord-cli.git`  
-**方案二（国内网络不佳：GitCode 镜像）** `git clone https://gitcode.com/yoshino-s/birdrecord-cli.git`
-
-克隆后 `uv sync --group dev && uv run pytest tests/ -v`（部分请求线上 API；部分 `verify=False`）。测试经 [`birdrecord_client.py`](./birdrecord_client.py) 导入。
+克隆后 `uv sync --group dev && uv run pytest tests/ -v`（部分请求线上 API；部分 `verify=False`）。代码在 [`birdrecord_cli/`](./birdrecord_cli/)，开发树中可用 `uv run birdrecord-cli …` 运行 CLI。测试从 `birdrecord_cli` 包导入。
 
 ## 许可
 
