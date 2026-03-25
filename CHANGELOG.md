@@ -1,5 +1,11 @@
 ## [0.1.1] — 2026-03-25
 
+**Full Changelog**: https://github.com/yoshino-s/birdrecord-cli/compare/v0.1.0...v0.1.1
+
+---
+
+## [0.1.1] — 2026-03-25
+
 - Split `birdrecord_cli.cli` into subpackages per command; `models` into `models.client` (HTTP API) and `models.cli` (CLI-only shapes).
 - Renamed chart/activity/search models for consistent `*Request` / `UnifiedSearch*` naming.
 - Fixed setuptools `packages.find` so wheels include all subpackages; console entrypoint is `birdrecord_cli.cli:main`.
