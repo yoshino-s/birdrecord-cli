@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Mapping, Type
 
 import click
-import httpx
+import requests
 from pydantic import BaseModel
 
 from birdrecord_cli.client import BirdrecordApiError, BirdrecordCall, BirdrecordClient
@@ -119,7 +119,7 @@ class BirdrecordGroup(click.Group):
             if e.envelope is not None:
                 emit_json(e.envelope, pretty=pretty)
             raise click.exceptions.Exit(1) from e
-        except httpx.HTTPError as e:
+        except requests.exceptions.RequestException as e:
             click.echo(
                 f"{_cli_txt('HTTP error:', 'HTTP 错误：')} {e}",
                 err=True,

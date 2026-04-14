@@ -13,7 +13,7 @@ from typing import (
     TypeVar,
 )
 
-import httpx
+import requests
 from pydantic import BaseModel
 
 from birdrecord_cli.constants import (
@@ -195,17 +195,18 @@ class BirdrecordClient:
         timeout: float = 60.0,
     ) -> None:
         self._token = token
-        self._client = httpx.Client(
-            base_url=base_url.rstrip("/"),
-            timeout=timeout,
-            verify=verify,
-            headers={
+        self._base_url = base_url.rstrip("/")
+        self._timeout = timeout
+        self._client = requests.Session()
+        self._client.verify = verify
+        self._client.headers.update(
+            {
                 "User-Agent": user_agent,
                 "Content-Type": "application/json",
                 "xweb_xhr": "1",
                 "Referer": referer,
                 "Accept-Language": "zh-CN,zh;q=0.9",
-            },
+            }
         )
 
     def close(self) -> None:
@@ -236,7 +237,12 @@ class BirdrecordClient:
     ) -> BirdrecordResponse:
         """POST JSON; raw envelope + parsed payload."""
         path = path if path.startswith("/") else f"/{path}"
-        r = self._client.post(path, json=dict(body), headers=self._headers())
+        r = self._client.post(
+            self._base_url + path,
+            json=dict(body),
+            headers=self._headers(),
+            timeout=self._timeout,
+        )
         r.raise_for_status()
         envelope = r.json()
         if not isinstance(envelope, dict):
@@ -252,7 +258,12 @@ class BirdrecordClient:
         """POST common/{subpath}; validates common envelope."""
         sub = subpath.removeprefix("/")
         path = f"/api/weixin/common/{sub}"
-        r = self._client.post(path, json=dict(body), headers=self._headers())
+        r = self._client.post(
+            self._base_url + path,
+            json=dict(body),
+            headers=self._headers(),
+            timeout=self._timeout,
+        )
         r.raise_for_status()
         envelope = r.json()
         if not isinstance(envelope, dict):
@@ -277,7 +288,12 @@ class BirdrecordClient:
             **self._headers(),
             "Content-Type": "application/x-www-form-urlencoded",
         }
-        r = self._client.post(path, data=dict(form), headers=headers)
+        r = self._client.post(
+            self._base_url + path,
+            data=dict(form),
+            headers=headers,
+            timeout=self._timeout,
+        )
         r.raise_for_status()
         envelope = r.json()
         if not isinstance(envelope, dict):

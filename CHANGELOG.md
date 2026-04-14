@@ -1,6 +1,14 @@
-## [0.1.1] — 2026-03-25
+## [0.1.2] — 2026-04-14
 
-**Full Changelog**: https://github.com/yoshino-s/birdrecord-cli/compare/v0.1.0...v0.1.1
+- Replaced `httpx` with `requests` as the HTTP client (`requests.Session`); public API unchanged.
+- Added `pre-commit` configuration with `pre-push` hooks: `ruff` lint, `ruff-format --check`, `uv lock --check`, requirements export check, and `pytest`.
+- Added `requirements.txt` auto-generated from `uv export --frozen --no-dev`.
+
+**Full Changelog**: https://github.com/yoshino-s/birdrecord-cli/compare/v0.1.1...v0.1.2
+
+---
+
+## [0.1.1] — 2026-03-25
 
 ---
 
