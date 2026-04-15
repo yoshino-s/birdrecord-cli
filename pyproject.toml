@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "birdrecord-cli"
-version = "0.1.2"
+version = "0.1.3"
 description = "CLI for China Bird Record (birdreport.cn); default API host weixin.birdrecord.cn."
 readme = "README.md"
 license = "MIT"
