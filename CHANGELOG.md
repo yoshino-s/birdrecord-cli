@@ -1,3 +1,9 @@
+## [0.1.3] — 2026-04-15
+
+**Full Changelog**: https://github.com/yoshino-s/birdrecord-cli/compare/v0.1.2...v0.1.3
+
+---
+
 ## [0.1.2] — 2026-04-14
 
 **Full Changelog**: https://github.com/yoshino-s/birdrecord-cli/compare/v0.1.1...v0.1.2
