@@ -21,12 +21,8 @@ class ChartActivityTaxonRow(BaseModel):
     )
 
     taxon_id: int = Field(..., description=_schema_txt("Taxon id.", "鸟种 ID。"))
-    taxonname: str = Field(
-        ..., description=_schema_txt("Chinese name.", "中文名。")
-    )
-    latinname: str = Field(
-        ..., description=_schema_txt("Latin name.", "拉丁名。")
-    )
+    taxonname: str = Field(..., description=_schema_txt("Chinese name.", "中文名。"))
+    latinname: str = Field(..., description=_schema_txt("Latin name.", "拉丁名。"))
     englishname: str = Field(
         default="",
         description=_schema_txt("English name.", "英文名。"),

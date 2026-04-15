@@ -9,6 +9,7 @@ from Crypto.Util.Padding import unpad
 
 from birdrecord_cli.constants import AES_IV, AES_KEY
 
+
 def decrypt_aes_cbc_b64(ciphertext_b64: str) -> bytes:
     raw = base64.b64decode(ciphertext_b64)
     cipher = AES.new(AES_KEY, AES.MODE_CBC, AES_IV)
@@ -28,4 +29,3 @@ def parse_encrypted_envelope(envelope: Mapping[str, Any]) -> Any:
     if envelope.get("result") is not None:
         return envelope["result"]
     return None
-

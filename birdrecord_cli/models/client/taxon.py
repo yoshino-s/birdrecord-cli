@@ -79,9 +79,7 @@ class TaxonRow(BaseModel):
         default=None,
         description=_schema_txt("Family (Chinese).", "科名（中文）。"),
     )
-    uuid: Any | None = Field(
-        default=None, description=_schema_txt("Uuid.", "UUID。")
-    )
+    uuid: Any | None = Field(default=None, description=_schema_txt("Uuid.", "UUID。"))
     serial_id: Any | None = Field(
         default=None, description=_schema_txt("Serial.", "流水号。")
     )
@@ -145,7 +143,9 @@ def _taxon_search_cache_path(version: str) -> Path:
     return _taxon_search_cache_dir() / f"{h}.json"
 
 
-def _load_taxon_search_disk(version: str) -> tuple[dict[str, Any], list[TaxonRow]] | None:
+def _load_taxon_search_disk(
+    version: str,
+) -> tuple[dict[str, Any], list[TaxonRow]] | None:
     path = _taxon_search_cache_path(version)
     try:
         doc = json.loads(path.read_text(encoding="utf-8"))

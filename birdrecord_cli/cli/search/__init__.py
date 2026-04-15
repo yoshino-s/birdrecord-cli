@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+from typing import Any, Callable
+
 import click
+import requests
+from click._utils import FLAG_NEEDS_VALUE
 
 from birdrecord_cli.cli.core import (
     CliConfig,
@@ -26,6 +30,36 @@ from birdrecord_cli.models.cli import (
     unified_search_to_common_activity,
     unified_search_to_region_chart,
 )
+from birdrecord_cli.cli.search.report_map import (
+    render_report_map_html,
+    upload_report_map_html,
+    write_report_map_html,
+)
+
+
+class OptionalValueFlagOption(click.Option):
+    """Flag option that optionally consumes a following value token."""
+
+    _previous_parser_process: Callable[[Any, Any], None]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.optional_value = kwargs.pop("optional_value", None)
+        super().__init__(*args, **kwargs)
+
+    def add_to_parser(self, parser: Any, ctx: click.Context) -> None:
+        super().add_to_parser(parser, ctx)
+
+        def parser_process(value: Any, state: Any) -> None:
+            if value is FLAG_NEEDS_VALUE:
+                value = self.optional_value
+            self._previous_parser_process(value, state)
+
+        for opt in self.opts:
+            option = parser._long_opt.get(opt) or parser._short_opt.get(opt)
+            if option is not None:
+                self._previous_parser_process = option.process
+                option.process = parser_process
+                break
 
 
 def register_search_commands(group: click.Group) -> None:
@@ -65,6 +99,30 @@ def register_search_commands(group: click.Group) -> None:
         ),
     )
     @click.option(
+        "--report-map",
+        "report_map",
+        cls=OptionalValueFlagOption,
+        is_flag=False,
+        required=False,
+        type=str,
+        optional_value="output/report_map.html",
+        metavar="[OUTPUT_HTML]",
+        help=_cli_txt(
+            "Generate REPORT MAP: local HTML path (default output/report_map.html) or ONLINE to upload and return URL.",
+            "生成 REPORT MAP：本地 HTML 路径（默认 output/report_map.html）或 ONLINE（上传并返回 URL）。",
+        ),
+    )
+    @click.option(
+        "--report-limit",
+        "report_limit",
+        default=None,
+        type=int,
+        help=_cli_txt(
+            "Max total report rows to fetch across pages (stops paging once reached); default = fetch all pages.",
+            "跨分页最多获取的记录条数上限（达到后停止翻页）；默认获取全部分页。",
+        ),
+    )
+    @click.option(
         "--body-json",
         default=None,
         help=_cli_txt(
@@ -86,9 +144,18 @@ def register_search_commands(group: click.Group) -> None:
         ctx: click.Context,
         want_taxon: bool,
         want_report: bool,
+        report_map: str | None,
+        report_limit: int | None,
         body_json: str | None,
         schema: bool,
     ) -> None:
+        if report_map and not want_report:
+            raise click.UsageError(
+                _cli_txt(
+                    "--report-map requires --report.",
+                    "--report-map 需要与 --report 一起使用。",
+                )
+            )
         if schema:
             click.echo(
                 json_schema_text_object(
@@ -121,18 +188,90 @@ def register_search_commands(group: click.Group) -> None:
                     if cfg.envelope:
                         envelopes["taxon"] = tcall.envelope.model_dump()
                 if want_report:
-                    rcall = client.common_page_activity(
-                        build_common_page_activity_request(
-                            base, report_month=unified.report_month
+                    report_rows = []
+                    page = 1
+                    while True:
+                        rcall = client.common_page_activity(
+                            build_common_page_activity_request(
+                                base,
+                                report_month=unified.report_month,
+                                start=page,
+                            )
                         )
+                        batch = rcall.payload or []
+                        report_rows.extend(batch)
+                        if cfg.envelope:
+                            envelopes[f"report_page_{page}"] = (
+                                rcall.envelope.model_dump()
+                            )
+                        # Stop if no rows returned
+                        if not batch:
+                            break
+                        # Stop if reached the limit
+                        if (
+                            report_limit is not None
+                            and len(report_rows) >= report_limit
+                        ):
+                            report_rows = report_rows[:report_limit]
+                            break
+                        # Stop if we've consumed all available pages
+                        env = rcall.envelope
+                        total = getattr(env, "total", None)
+                        size = getattr(env, "size", None) or len(batch)
+                        if total is not None and len(report_rows) >= total:
+                            break
+                        if len(batch) < size:
+                            break
+                        page += 1
+        report_map_ref: str | None = None
+        if report_map and report_rows is not None:
+            if report_map.strip().casefold() == "online":
+                html = render_report_map_html(
+                    report_rows,
+                    province=unified.province,
+                    city=unified.city,
+                    district=unified.district,
+                )
+                try:
+                    report_map_ref = upload_report_map_html(
+                        html,
+                        timeout=cfg.timeout,
                     )
-                    report_rows = rcall.payload
-                    if cfg.envelope:
-                        envelopes["report"] = rcall.envelope.model_dump()
+                except (requests.RequestException, ValueError) as exc:
+                    raise click.ClickException(
+                        _cli_txt(
+                            f"Failed to upload REPORT MAP ONLINE: {exc}",
+                            f"REPORT MAP ONLINE 上传失败：{exc}",
+                        )
+                    ) from exc
+                click.echo(
+                    _cli_txt(
+                        f"Generated REPORT MAP URL: {report_map_ref}",
+                        f"已生成 REPORT MAP URL：{report_map_ref}",
+                    ),
+                    err=True,
+                )
+            else:
+                out_path = write_report_map_html(
+                    report_rows,
+                    output_path=report_map,
+                    province=unified.province,
+                    city=unified.city,
+                    district=unified.district,
+                )
+                report_map_ref = str(out_path)
+                click.echo(
+                    _cli_txt(
+                        f"Generated REPORT MAP HTML: {out_path}",
+                        f"已生成 REPORT MAP HTML：{out_path}",
+                    ),
+                    err=True,
+                )
         out = UnifiedSearchResult(
             statistic=stat_fetch.result,
             taxon=taxon_rows,
             report=report_rows,
+            report_map=report_map_ref,
         )
         if cfg.envelope:
             emit_json(

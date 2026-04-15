@@ -115,6 +115,10 @@ Options:
   --taxon           Include per-species record counts for the chart month
                     (common/list).
   --report          Include paged observation report cards (common/page).
+  --report-map [OUTPUT_HTML]
+                    Generate REPORT MAP: local HTML path (default
+                    output/report_map.html) or ONLINE to upload and return
+                    URL.
   --body-json TEXT  Unified filter JSON (UnifiedSearchRequest): chart fields plus
                     optional taxon_month, report_month, outside_type for
                     drill-down.
@@ -135,7 +139,15 @@ Always one shape: **`statistic`** (with **`by_month`** and **`total`** for the f
 
 - **`taxon`**: `null` if `--taxon` was not passed; otherwise an array (possibly empty) of species ranking rows.
 - **`report`**: `null` if `--report` was not passed; otherwise an array of paged report cards.
+- **`report_map`**: `null` unless `--report-map` is passed together with `--report`; local output path for file mode, URL for `--report-map ONLINE`.
 - **`--envelope`**: Same keys as before under `envelope`; the merged payload is still `statistic` + `taxon` + `report` as above.
+
+### `search` report map (`--report-map`)
+
+- Requires `--report`; passing `--report-map` alone is an error.
+- Bare `--report-map` writes local HTML to `output/report_map.html`.
+- `--report-map path/to/map.html` writes to that local path.
+- `--report-map ONLINE` uploads generated HTML to online and returns a share URL in `report_map`.
 
 ### `search` body JSON (`UnifiedSearchRequest`)
 

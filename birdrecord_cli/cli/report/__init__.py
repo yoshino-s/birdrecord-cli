@@ -4,7 +4,13 @@ from __future__ import annotations
 
 import click
 
-from birdrecord_cli.cli.core import CliConfig, client_from_cfg, emit_enveloped_model, json_schema_text, with_client_config
+from birdrecord_cli.cli.core import (
+    CliConfig,
+    client_from_cfg,
+    emit_enveloped_model,
+    json_schema_text,
+    with_client_config,
+)
 from birdrecord_cli.i18n import _cli_txt
 from birdrecord_cli.models.client import ReportBundleResult
 

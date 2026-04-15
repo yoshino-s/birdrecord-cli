@@ -81,7 +81,9 @@ def unified_search_to_region_chart(body: UnifiedSearchRequest) -> RegionChartReq
     return RegionChartRequest.model_validate(data)
 
 
-def unified_search_to_common_activity(body: UnifiedSearchRequest) -> CommonActivityRequest:
+def unified_search_to_common_activity(
+    body: UnifiedSearchRequest,
+) -> CommonActivityRequest:
     """Map chart taxonid (int) to activity string taxonid; drop report_month (page request adds it)."""
     data = body.model_dump(exclude={"report_month"}, mode="python")
     tid = data.get("taxonid", 0)

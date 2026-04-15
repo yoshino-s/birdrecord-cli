@@ -68,7 +68,9 @@ def register_adcode_commands(group: click.Group) -> None:
             filtered = filter_region_rows_by_query(
                 list(raw.payload), query, label_attr="province_name"
             )
-            emit_call(cfg, _standard_list_call_after_query_filter(raw, filtered, query=query))
+            emit_call(
+                cfg, _standard_list_call_after_query_filter(raw, filtered, query=query)
+            )
 
     @group.command(
         "cities",
@@ -127,4 +129,6 @@ def register_adcode_commands(group: click.Group) -> None:
             filtered = filter_region_rows_by_query(
                 list(raw.payload), query, label_attr="city_name"
             )
-            emit_call(cfg, _standard_list_call_after_query_filter(raw, filtered, query=query))
+            emit_call(
+                cfg, _standard_list_call_after_query_filter(raw, filtered, query=query)
+            )

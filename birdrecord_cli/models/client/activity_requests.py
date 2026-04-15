@@ -143,7 +143,7 @@ class CommonPageActivityRequest(CommonActivityRequest):
         description=_schema_txt("1-based page.", "从 1 开始的页码。"),
     )
     limit: int = Field(
-        default=15,
+        default=50,
         ge=1,
         description=_schema_txt("Page size.", "每页条数。"),
     )
@@ -186,9 +186,11 @@ def build_common_page_activity_request(
     base: CommonActivityRequest,
     *,
     report_month: str | None = None,
+    start: int = 1,
 ) -> CommonPageActivityRequest:
     """Attach ``searchChartActivity`` sqlid and page defaults to shared activity filters."""
     d = base.model_dump()
     if report_month is not None:
         d["report_month"] = report_month
+    d["start"] = start
     return CommonPageActivityRequest.model_validate(d)

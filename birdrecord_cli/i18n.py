@@ -2,6 +2,7 @@
 
 import os
 
+
 def _cli_use_zh_cn() -> bool:
     """True when BIRDRECORD_CLI_CN is set to a truthy value (0/false/no/off disable)."""
     raw = os.environ.get("BIRDRECORD_CLI_CN")

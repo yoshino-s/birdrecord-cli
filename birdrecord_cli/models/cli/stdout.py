@@ -46,3 +46,10 @@ class UnifiedSearchResult(BaseModel):
             "传了 --report 时为分页记录；未传该标志时为 null。",
         ),
     )
+    report_map: str | None = Field(
+        default=None,
+        description=_schema_txt(
+            "REPORT MAP reference when --report-map is used: local output path or online URL.",
+            "传 --report-map 时的 REPORT MAP 引用：本地输出路径或在线 URL。",
+        ),
+    )

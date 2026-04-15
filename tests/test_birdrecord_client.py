@@ -69,7 +69,7 @@ def test_common_activity_body_builds_sqlid_requests():
     pg = build_common_page_activity_request(base)
     assert pg.sqlid == "searchChartActivity"
     assert pg.start == 1
-    assert pg.limit == 15
+    assert pg.limit == 50
     assert pg.report_month == ""
     pg2 = build_common_page_activity_request(base, report_month="03")
     assert pg2.report_month == "03"
@@ -98,7 +98,9 @@ def test_unified_search_request_month_fields() -> None:
 
 def test_request_models_serialize():
     assert AdcodeProvinceRequest().model_dump() == {}
-    assert AdcodeCityRequest(province_code="130000").model_dump() == {"province_code": "130000"}
+    assert AdcodeCityRequest(province_code="130000").model_dump() == {
+        "province_code": "130000"
+    }
     assert TaxonSearchRequest().version == DEFAULT_TAXON_VERSION
     assert "version" in TaxonSearchRequest().model_dump()
 
@@ -176,28 +178,53 @@ def test_filter_region_rows_by_query() -> None:
         ProvinceRow(province_code="110000", province_name="北京市"),
         ProvinceRow(province_code="130000", province_name="河北省"),
     ]
-    assert len(filter_region_rows_by_query(provinces, None, label_attr="province_name")) == 2
-    assert len(filter_region_rows_by_query(provinces, "", label_attr="province_name")) == 2
-    assert len(filter_region_rows_by_query(provinces, "  ", label_attr="province_name")) == 2
-    assert {r.province_code for r in filter_region_rows_by_query(provinces, "河北", label_attr="province_name")} == {
-        "130000"
-    }
-    assert {r.province_code for r in filter_region_rows_by_query(provinces, "hebei", label_attr="province_name")} == {
-        "130000"
-    }
-    assert {r.province_code for r in filter_region_rows_by_query(provinces, "HEBEI", label_attr="province_name")} == {
-        "130000"
-    }
-    assert {r.province_code for r in filter_region_rows_by_query(provinces, "hb", label_attr="province_name")} == {
-        "130000"
-    }
+    assert (
+        len(filter_region_rows_by_query(provinces, None, label_attr="province_name"))
+        == 2
+    )
+    assert (
+        len(filter_region_rows_by_query(provinces, "", label_attr="province_name")) == 2
+    )
+    assert (
+        len(filter_region_rows_by_query(provinces, "  ", label_attr="province_name"))
+        == 2
+    )
+    assert {
+        r.province_code
+        for r in filter_region_rows_by_query(
+            provinces, "河北", label_attr="province_name"
+        )
+    } == {"130000"}
+    assert {
+        r.province_code
+        for r in filter_region_rows_by_query(
+            provinces, "hebei", label_attr="province_name"
+        )
+    } == {"130000"}
+    assert {
+        r.province_code
+        for r in filter_region_rows_by_query(
+            provinces, "HEBEI", label_attr="province_name"
+        )
+    } == {"130000"}
+    assert {
+        r.province_code
+        for r in filter_region_rows_by_query(
+            provinces, "hb", label_attr="province_name"
+        )
+    } == {"130000"}
     cities = [
         CityRow(city_code="110100", city_name="市辖区"),
         CityRow(city_code="110200", city_name="县"),
     ]
     assert len(filter_region_rows_by_query(cities, "辖区", label_attr="city_name")) == 1
-    assert len(filter_region_rows_by_query(cities, "xiaqu", label_attr="city_name")) == 1
-    assert len(filter_region_rows_by_query(provinces, "zzz", label_attr="province_name")) == 0
+    assert (
+        len(filter_region_rows_by_query(cities, "xiaqu", label_attr="city_name")) == 1
+    )
+    assert (
+        len(filter_region_rows_by_query(provinces, "zzz", label_attr="province_name"))
+        == 0
+    )
 
 
 def test_taxon_search_uses_default_version(client: BirdrecordClient) -> None:

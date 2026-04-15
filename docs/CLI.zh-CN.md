@@ -153,6 +153,9 @@ Options:
   --taxon           Include per-species record counts for the chart month
                     (common/list).
   --report          Include paged observation report cards (common/page).
+  --report-map [OUTPUT_HTML]
+                    生成 REPORT MAP：本地 HTML 路径（默认
+                    output/report_map.html）或 ONLINE（上传并返回 URL）。
   --body-json TEXT  统一筛选 JSON（UnifiedSearchRequest）：图表字段 + 下钻可选
                     taxon_month、report_month、outside_type。
   --schema          仅打印请求（UnifiedSearchRequest）与响应（UnifiedSearchResult）的 JSON
@@ -172,7 +175,15 @@ Options:
 
 - **`taxon`**：未传 `--taxon` 时为 **`null`**；传了则为数组（可为空）。
 - **`report`**：未传 `--report` 时为 **`null`**；传了则为数组。
+- **`report_map`**：仅当同时传 `--report-map` 与 `--report` 时可能非空；本地模式返回本地输出路径，`--report-map ONLINE` 返回在线 URL。
 - **`--envelope`**：`envelope` 内多键结构照旧；`payload` 仍为上述 `statistic` + `taxon` + `report`。
+
+### `search` 的 REPORT MAP（`--report-map`）
+
+- 必须与 `--report` 一起用；单独传 `--report-map` 会报错。
+- 裸传 `--report-map`：默认写入本地 `output/report_map.html`。
+- `--report-map 路径`：写到指定本地路径。
+- `--report-map ONLINE`：上传到线上，并在 `report_map` 字段返回分享 URL。
 
 ### `search` 的 `--body-json`（`UnifiedSearchRequest`）
 

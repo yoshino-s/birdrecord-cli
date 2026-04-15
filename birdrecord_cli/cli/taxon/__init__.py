@@ -7,7 +7,13 @@ from typing import Any
 import click
 
 from birdrecord_cli.client import BirdrecordClient, _taxon_call_for_emit
-from birdrecord_cli.cli.core import CliConfig, client_from_cfg, emit_call, json_schema_text, with_client_config
+from birdrecord_cli.cli.core import (
+    CliConfig,
+    client_from_cfg,
+    emit_call,
+    json_schema_text,
+    with_client_config,
+)
 from birdrecord_cli.constants import DEFAULT_TAXON_VERSION
 from birdrecord_cli.i18n import _cli_txt
 from birdrecord_cli.models.client import (

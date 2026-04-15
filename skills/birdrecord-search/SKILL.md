@@ -36,10 +36,22 @@ uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --body-json '<JSON>' [-
 uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --taxon --body-json '<JSON>' [--pretty]
 uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --report --body-json '<JSON>' [--pretty]
 uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --taxon --report --body-json '<JSON>' [--pretty]
+uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --report --report-map [<OUTPUT_HTML>|ONLINE] --body-json '<JSON>' [--pretty]
 ```
 
 - **`--body-json`:** single unified object **`UnifiedSearchRequest`** (chart fields + optional `taxon_month`, `report_month`, `outside_type`). See **Month filters** below.
 - **`--schema`:** prints **`request`** = `UnifiedSearchRequest`, **`response`** = `UnifiedSearchResult` (no HTTP).
+- **`--report-map`:** valid only with `--report`.
+  - bare `--report-map` => write local `output/report_map.html`
+  - `--report-map <path>` => write local HTML to that path
+  - `--report-map ONLINE` => upload to online and return URL in `report_map`
+
+### Default agent behavior for drill-down maps
+
+When user constraints are relatively light, default to enabling both `--report` and `--report-map`:
+
+- Date range is within one calendar month.
+- Region scope is no larger than city level (city or district filters; do not default this for province-wide or nationwide scopes).
 
 ### Region prefetch
 
