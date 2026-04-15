@@ -20,23 +20,23 @@ description: >-
 
 ## How to run (agents)
 
-**Pin:** `birdrecord-cli==0.1.2` (bump each release).
+**Pin:** `birdrecord-cli==0.1.3` (bump each release).
 
-- **Invoke:** `uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli …`
+- **Invoke:** `uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli …`
 - **Chinese or 中文 `--schema`:** `BIRDRECORD_CLI_CN=1` on the same line (truthy; not `0` / `false` / `no` / `off`).
-- **No `uvx`:** `pip install 'birdrecord-cli==0.1.2'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
+- **No `uvx`:** `pip install 'birdrecord-cli==0.1.3'` → then `birdrecord-cli …` with the same trailing args; prefer a **venv** if you must not touch system Python.
 - **Avoid** running ad-hoc copies of the repo unless the user is developing **birdrecord-cli** itself; use **`uvx`** / **`pip`** + **`birdrecord-cli`** for normal use.
 
 ### `search`
 
 ```bash
 # stdout: { statistic, taxon, report } — taxon/report null when flags omitted
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --body-json '<JSON>' [--pretty] [--envelope]
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli search --body-json '<JSON>' [--pretty] [--envelope]
 
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --taxon --body-json '<JSON>' [--pretty]
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --report --body-json '<JSON>' [--pretty]
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --taxon --report --body-json '<JSON>' [--pretty]
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search --report --report-map [<OUTPUT_HTML>|ONLINE] --body-json '<JSON>' [--pretty]
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli search --taxon --body-json '<JSON>' [--pretty]
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli search --report --body-json '<JSON>' [--pretty]
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli search --taxon --report --body-json '<JSON>' [--pretty]
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli search --report --report-map [<OUTPUT_HTML>|ONLINE] --body-json '<JSON>' [--pretty]
 ```
 
 - **`--body-json`:** single unified object **`UnifiedSearchRequest`** (chart fields + optional `taxon_month`, `report_month`, `outside_type`). See **Month filters** below.
@@ -56,8 +56,8 @@ When user constraints are relatively light, default to enabling both `--report` 
 ### Region prefetch
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli provinces [-q '<filter>'] [--pretty]
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli cities --province-code '<6-digit>' [-q '<filter>'] [--pretty]
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli provinces [-q '<filter>'] [--pretty]
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli cities --province-code '<6-digit>' [-q '<filter>'] [--pretty]
 ```
 
 ## Output shape (`UnifiedSearchResult`)
@@ -91,7 +91,7 @@ Do not set `sqlid`—the client overwrites it.
 ## Example
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli search \
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli search \
   --body-json '{"startTime":"2026-02-24","endTime":"2026-03-24","province":"河北省","taxonid":4148,"version":"CH4"}' \
   --pretty
 ```

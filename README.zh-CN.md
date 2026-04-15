@@ -51,8 +51,8 @@ birdrecord-cli --help
 [uv](https://docs.astral.sh/uv/) 会临时拉取包。建议 **固定版本** 以便结果可复现：
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli --help
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli provinces --pretty
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli --help
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli provinces --pretty
 ```
 
 示例中的版本号请以 PyPI 当前最新版为准。

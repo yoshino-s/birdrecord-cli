@@ -39,8 +39,8 @@ Package index: [pypi.org/project/birdrecord-cli](https://pypi.org/project/birdre
 [uv](https://docs.astral.sh/uv/) downloads the package into an ephemeral environment. Pin the version for reproducible behavior:
 
 ```bash
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli --help
-uvx --from 'birdrecord-cli==0.1.2' birdrecord-cli provinces --pretty
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli --help
+uvx --from 'birdrecord-cli==0.1.3' birdrecord-cli provinces --pretty
 ```
 
 Use the latest release version from PyPI if it differs from the example above.
